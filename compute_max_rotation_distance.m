@@ -4,6 +4,7 @@ r_avg = R_avg(:);
 d       = 12; 
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 r       = x(1:9);
+t       = x(10:12);
 R       = reshape(r,3,3);
 c1      = R(:,1);
 c2      = R(:,2);
