@@ -2,7 +2,7 @@ clc
 clear
 close all
 
-fname = "../6D_Pose/duck_sample_radius-maxp.mat";
+fname = "duck_sample_radius-maxp.mat";
 load(fname)
 
 relaxpath = "../CertifiablyRobustPerception";
@@ -32,27 +32,31 @@ else
 end
 
 %% plot
-duck_cloud = pcread('../6D_Pose/data/bop/lmo/models/obj_000009.ply');
-
+duck_cloud = pcread('obj_000009.ply');
+clc
 close all
 figure;
-scale = 0.2;
-mArrow3(zeros(3,1),scale*[1;0;0],color='red');
+scale = 0.1;
+plot3([0,scale],[0,0],[0,0],'red','LineWidth',4)
 hold on
-mArrow3(zeros(3,1),scale*[0;1;0],color='green');
+plot3([0,0],[0,scale],[0,0],'green','LineWidth',4)
 hold on
-mArrow3(zeros(3,1),scale*[0;0;1],color='blue');
+plot3([0,0],[0,0],[0,scale],'blue','LineWidth',4)
 hold on
 duck_avg_loc = (R_avg * (double(duck_cloud.Location)/1000)' + t_avg)';
-pcshow(duck_avg_loc,duck_cloud.Color,'BackgroundColor','white')
+pcshow(duck_avg_loc,duck_cloud.Color,'MarkerSize',20)
 hold on
 duck_Rmax_loc = (R_max * (double(duck_cloud.Location)/1000)' + t_R_max)';
-pcd1 = pcshow(duck_Rmax_loc,'blue','BackgroundColor','white');
+pcd1 = pcshow(duck_Rmax_loc,'blue','MarkerSize',20);
 alpha(pcd1,0.2)
 hold on
 duck_tmax_loc = (R_t_max * (double(duck_cloud.Location)/1000)' + t_max)';
-pcd2 = pcshow(duck_tmax_loc,'red','BackgroundColor','white');
+pcd2 = pcshow(duck_tmax_loc,'red','MarkerSize',20);
 alpha(pcd2,0.2)
+set(gcf,'color','w');
+set(gca,'color','w');
+axis equal
+axis off
 
 
 
