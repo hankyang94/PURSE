@@ -34,6 +34,7 @@ end
 %% plot
 duck_cloud = pcread('../6D_Pose/data/bop/lmo/models/obj_000009.ply');
 
+clc
 close all
 figure;
 scale = 0.2;
@@ -53,6 +54,8 @@ hold on
 duck_tmax_loc = (R_t_max * (double(duck_cloud.Location)/1000)' + t_max)';
 pcd2 = pcshow(duck_tmax_loc,'red','BackgroundColor','white');
 alpha(pcd2,0.2)
+
+save('duck_sample_worst.mat','R_max','t_R_max','R_t_max','t_max')
 
 
 
