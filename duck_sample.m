@@ -58,5 +58,7 @@ set(gca,'color','w');
 axis equal
 axis off
 
+save('duck_sample_worst.mat','R_max','t_R_max','R_t_max','t_max')
+
 
 
