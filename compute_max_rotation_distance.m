@@ -20,8 +20,7 @@ h       = [c1'*c1 - 1;
            cross(c2,c3) - c1;
            cross(c3,c1) - c2];
        
-% g       = [10^2 - sum(t.^2)];
-g = [];
+g       = [5^2 - sum(t.^2)];
 for i = 1:size(A,1)
     Ai = squeeze(A(i,:,:));
     g  = [g; x' * (-Ai) * x];
