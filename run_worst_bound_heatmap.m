@@ -7,12 +7,11 @@ mosekpath   = '../mosek';
 addpath(genpath(relaxpath))
 addpath(genpath(mosekpath))
 
-score_type  = "radius-maxp";
-epsilon     = 0.1;
-do_frcnn    = false;
+score_type  = "radius-cov-topk";
+epsilon     = 0.4;
+do_frcnn    = true;
 
-% fname = sprintf("../6D_Pose/pose_uncertain_ellinf_%s_%.2f.mat",score_type,epsilon);
-fname = sprintf("/Users/hankyang/Downloads/pose_uncertain_ellinf_%s_%.2f.mat",score_type,epsilon);
+fname = sprintf("../6D_Pose/pose_uncertain_ellinf_%s_%.2f.mat",score_type,epsilon);
 if do_frcnn
     fname = sprintf("../6D_Pose/pose_uncertain_ellinf_%s_%.2f_frcnn.mat",score_type,epsilon);
 end
