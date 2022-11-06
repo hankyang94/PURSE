@@ -9,7 +9,7 @@ addpath(genpath(mosekpath))
 addpath(genpath('../'))
 
 score_type  = "radius-cov-topk";
-epsilon     = 0.1;
+epsilon     = 0.4;
 do_frcnn    = false;
 
 fname = sprintf("/Users/hankyang/Downloads/pose_uncertain_ellinf_%s_%.2f.mat",score_type,epsilon);

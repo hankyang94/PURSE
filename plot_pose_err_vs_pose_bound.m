@@ -4,10 +4,17 @@ close all
 
 score_type = 'radius-maxp';
 epsilon = 0.4;
+do_frcnn = true;
 
 fname1 = sprintf("bounds_errors/pose_bound_%s_%.2f.mat",score_type,epsilon);
+if do_frcnn
+    fname1 = sprintf("bounds_errors/pose_bound_%s_%.2f_frcnn.mat",score_type,epsilon);
+end
 load(fname1)
 fname2 = sprintf("bounds_errors/pose_avg_err_%s_%.2f.mat",score_type,epsilon);
+if do_frcnn
+    fname2 = sprintf("bounds_errors/pose_avg_err_%s_%.2f_frcnn.mat",score_type,epsilon);
+end
 load(fname2)
 
 R_errs = cat(2,R_avg_err{:})';
@@ -17,11 +24,13 @@ t_bds = cat(1,log_t_err_bound{:});
 coverage = cat(2,pose_coverage{:})';
 R_gap = cat(1,log_R_gap{:});
 
-% Replace wrong results
-fname3 = sprintf("abnormal/wrong_ids_%s_%.2f.mat",score_type,epsilon);
-load(fname3)
-R_bds(abnormal) = correct_R_err_bound;
-t_bds(abnormal) = correct_t_err_bound;
+if ~do_frcnn
+    % Replace wrong results
+    fname3 = sprintf("abnormal/wrong_ids_%s_%.2f.mat",score_type,epsilon);
+    load(fname3)
+    R_bds(abnormal) = correct_R_err_bound;
+    t_bds(abnormal) = correct_t_err_bound;
+end
 
 scattersize = 80;
 scatteralpha = 0.1;
@@ -49,8 +58,8 @@ ax = gca;
 ax.FontSize = ticksize;
 
 %% Plot translation figure
-t_max = 4;
-t_bds(t_bds > t_max) = t_max;
+t_max = 5;
+% t_bds(t_bds > t_max) = t_max;
 figure('Position', [100 100 500 500]);
 scatter(t_bds(~coverage),t_errs(~coverage),scattersize,'square','filled',...
     'MarkerFaceColor','red','MarkerEdgeColor','red',...
