@@ -9,7 +9,7 @@ addpath(genpath(mosekpath))
 
 score_type  = "radius-cov-topk";
 epsilon     = 0.4;
-do_frcnn    = true;
+do_frcnn    = false;
 
 fname = sprintf("../6D_Pose/pose_uncertain_ellinf_%s_%.2f.mat",score_type,epsilon);
 if do_frcnn
