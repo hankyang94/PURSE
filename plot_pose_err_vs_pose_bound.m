@@ -2,7 +2,7 @@ clc
 clear 
 close all
 
-score_type = 'radius-maxp';
+score_type = 'radius-cov-topk';
 epsilon = 0.4;
 do_frcnn = true;
 
@@ -24,22 +24,14 @@ t_bds = cat(1,log_t_err_bound{:});
 coverage = cat(2,pose_coverage{:})';
 R_gap = cat(1,log_R_gap{:});
 
-if ~do_frcnn
-    % Replace wrong results
-    fname3 = sprintf("abnormal/wrong_ids_%s_%.2f.mat",score_type,epsilon);
-    load(fname3)
-    R_bds(abnormal) = correct_R_err_bound;
-    t_bds(abnormal) = correct_t_err_bound;
-end
-
 scattersize = 80;
 scatteralpha = 0.1;
-labelsize = 30;
+labelsize = 40;
 ticksize = 15;
 legendsize = 18;
 
 %% Plot rotation figure
-figure('Position', [100 100 500 500]);
+figure('Position', [100 100 450 450]);
 scatter(R_bds(~coverage),R_errs(~coverage),scattersize,'square','filled',...
     'MarkerFaceColor','red','MarkerEdgeColor','red',...
     'MarkerFaceAlpha',scatteralpha,'MarkerEdgeAlpha',scatteralpha);
@@ -50,17 +42,17 @@ scatter(R_bds(coverage),R_errs(coverage),scattersize,'filled',...
 axis equal
 xlim([0,180]);
 ylim([0,180]);
-xlabel('Rotation error b/t avg pose and PURSE','FontSize',labelsize)
-ylabel('Rotation error b/t avg pose and gt pose','FontSize',labelsize)
+xlabel('Worst-case rotation error bound (deg)','FontSize',labelsize)
+ylabel('Rotation error b/t avg pose and gt pose (deg)','FontSize',labelsize)
 plot([0,180],[0,180],'cyan','LineWidth',3,'HandleVisibility','off');
-legend({'Uncovered','Covered'},'FontSize',legendsize,'Location','northoutside','NumColumns',2)
+legend({'Uncovered','Covered'},'FontSize',legendsize,'Location','north','NumColumns',2)
 ax = gca;
 ax.FontSize = ticksize;
 
 %% Plot translation figure
 t_max = 5;
 % t_bds(t_bds > t_max) = t_max;
-figure('Position', [100 100 500 500]);
+figure('Position', [100 100 450 450]);
 scatter(t_bds(~coverage),t_errs(~coverage),scattersize,'square','filled',...
     'MarkerFaceColor','red','MarkerEdgeColor','red',...
     'MarkerFaceAlpha',scatteralpha,'MarkerEdgeAlpha',scatteralpha);
@@ -71,10 +63,10 @@ scatter(t_bds(coverage),t_errs(coverage),scattersize,'filled',...
 axis equal
 xlim([0,t_max]);
 ylim([0,t_max]);
-xlabel('Translation error b/t avg pose and PURSE','FontSize',labelsize)
+xlabel('Worst-case translation error bound','FontSize',labelsize)
 ylabel('Translation error b/t avg pose and gt pose','FontSize',labelsize)
 plot([0,t_max],[0,t_max],'cyan','LineWidth',3,'HandleVisibility','off');
-legend({'Uncovered','Covered'},'FontSize',legendsize,'Location','northoutside','NumColumns',2)
+legend({'Uncovered','Covered'},'FontSize',legendsize,'Location','north','NumColumns',2)
 ax = gca;
 ax.FontSize = ticksize;
 
