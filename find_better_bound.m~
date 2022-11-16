@@ -30,8 +30,8 @@ for objidx = 1:n_objs
     obj_R_samples    = R_samples{objidx};
     obj_t_samples    = t_samples{objidx};
 
-    obj_R_bounds = zeros(n_samples,1);
-    obj_t_bounds = zeros(n_samples,1);
+    obj_R_bounds = zeros(2,n_samples);
+    obj_t_bounds = zeros(2,n_samples);
 
     for idx = 1:n_samples
         A_c = squeeze(obj_A(idx,:,:,:));
@@ -39,16 +39,17 @@ for objidx = 1:n_objs
 
         n_poses  = size(obj_R_samples{idx},1);
         pose_id  = rem(job,n_poses);
-        if pose_id == 0
-            pose_id = n_poses;
-        end
-        R_query = squeeze(obj_R_samples{idx}(pose_id,:,:));
-        t_query = squeeze(obj_t_samples{idx}(pose_id,:));
-        t_query = t_query(:);
 
-        [R_bd, t_bd] = compute_bound_one_instance(A_c,B_c,R_query,t_query);
-        obj_R_bounds(idx) = R_bd;
-        obj_t_bounds(idx) = t_bd;
+        for j = 1:2
+            pose_j = pose_ids(j);
+            R_query = squeeze(obj_R_samples{idx}(pose_j,:,:));
+            t_query = squeeze(obj_t_samples{idx}(pose_j,:));
+            t_query = t_query(:);
+
+            [R_bd, t_bd] = compute_bound_one_instance(A_c,B_c,R_query,t_query);
+            obj_R_bounds(j,idx) = R_bd;
+            obj_t_bounds(j,idx) = t_bd;
+        end
     end
 
     log_R_err_bound = [log_R_err_bound;{obj_R_bounds}];

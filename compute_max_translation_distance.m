@@ -1,4 +1,7 @@
-function [R,t,info] = compute_max_translation_distance(t_avg,A,B)
+function [R,t,info] = compute_max_translation_distance(t_avg,A,B,kappa)
+if nargin < 4
+    kappa = 2;
+end
 
 d       = 12; 
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
@@ -34,7 +37,6 @@ problem.vars            = x;
 problem.objective       = f;
 problem.equality        = h; 
 problem.inequality      = g;
-kappa                   = 2; % relaxation order
 [SDP,relaxinfo]         = dense_sdp_relax(problem,kappa);
 
 prob       = convert_sedumi2mosek(SDP.sedumi.At,...
@@ -49,19 +51,13 @@ v = V(:,1) / V(1,1);
 R = project2SO3(reshape(v(2:10),3,3));
 t = v(11:13);
 
-if is_pose_in_purse(R,t,A,B)
-    f_sdp = -obj(1);
-    f_est = norm(t_avg - t)^2;
-    gap = abs(f_est - f_sdp) / (1 + abs(f_est) + abs(f_sdp));
-    info.f_sdp = f_sdp;
-    info.f_est = f_est;
-    info.gap = gap;
-    fprintf('f_sdp: %3.2e, f_est: %3.2e, gap: %3.2e.\n',f_sdp,f_est,gap);
+if kappa == 1
+    R = [];
+    t = [];
+    info.f_sdp = -obj(1);
+    info.gap = nan;
 else
-    [Rnew,tnew] = nonlinear_refine(A,B,R,t);
-    R = Rnew;
-    t = tnew;
-    if ~isempty(Rnew)
+    if is_pose_in_purse(R,t,A,B)
         f_sdp = -obj(1);
         f_est = norm(t_avg - t)^2;
         gap = abs(f_est - f_sdp) / (1 + abs(f_est) + abs(f_sdp));
@@ -70,10 +66,23 @@ else
         info.gap = gap;
         fprintf('f_sdp: %3.2e, f_est: %3.2e, gap: %3.2e.\n',f_sdp,f_est,gap);
     else
-        info.f_sdp = -obj(1);
-        info.f_est = nan;
-        info.gap = nan;
-        fprintf('Failed to compute the max translation distance.\n');
+        [Rnew,tnew] = nonlinear_refine(A,B,R,t);
+        R = Rnew;
+        t = tnew;
+        if ~isempty(Rnew)
+            f_sdp = -obj(1);
+            f_est = norm(t_avg - t)^2;
+            gap = abs(f_est - f_sdp) / (1 + abs(f_est) + abs(f_sdp));
+            info.f_sdp = f_sdp;
+            info.f_est = f_est;
+            info.gap = gap;
+            fprintf('f_sdp: %3.2e, f_est: %3.2e, gap: %3.2e.\n',f_sdp,f_est,gap);
+        else
+            info.f_sdp = -obj(1);
+            info.f_est = nan;
+            info.gap = nan;
+            fprintf('Failed to compute the max translation distance.\n');
+        end
     end
 end
 end

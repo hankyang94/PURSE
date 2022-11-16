@@ -2,9 +2,9 @@ clc
 clear 
 close all
 
-score_type = 'radius-cov-topk';
-epsilon = 0.4;
-do_frcnn = true;
+score_type = 'radius-maxp';
+epsilon = 0.1;
+do_frcnn = false;
 
 fname1 = sprintf("bounds_errors/pose_bound_%s_%.2f.mat",score_type,epsilon);
 if do_frcnn
