@@ -10,7 +10,7 @@ addpath(genpath(mosekpath))
 score_type  = "radius-maxp";
 epsilon     = 0.1;
 do_frcnn    = false;
-job         = 5;
+job         = 3;
 
 % fname = sprintf("/Users/hankyang/Downloads/samples_pose_uncertain_ellinf_%s_%.2f.mat",score_type,epsilon);
 fname = sprintf("../6D_Pose/samples_pose_uncertain_ellinf_%s_%.2f.mat",score_type,epsilon);
